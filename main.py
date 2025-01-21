@@ -7,8 +7,16 @@ from langchain_community.document_loaders import DirectoryLoader
 from langchain_openai import OpenAIEmbeddings
 from langchain.indexes import VectorstoreIndexCreator
 from langchain.memory import ConversationBufferMemory	
+import importlib.util
 
-gpt_model = "gpt-3.5-turbo-1106"
+# Check if libmagic is installed
+libmagic_spec = importlib.util.find_spec("magic")
+if libmagic_spec is None:
+    st.error("libmagic is not installed. Please install it to proceed.")
+else:
+    import magic
+
+gpt_model = "gpt-4o-mini"
 
 # set local docs for langchain
 chat_history = None
@@ -57,17 +65,18 @@ def save_data(data: str) -> None:
         print(f"Error {e} has occurred")
 
 
-def marta(question:str)  -> None:
-    #recieves prompt from user, and returns answer
+def marta(question: str) -> str:
+    # receives prompt from user, and returns answer
     chain = ConversationalRetrievalChain.from_llm(
-        llm = llm,
-        retriever = retriever,
-        memory = memory,
+        llm=llm,
+        retriever=retriever,
+        memory=memory,
     )
     result = chain.invoke({"question": question, "chat_history": chat_history})
-    chat_history.append((question, result['answer']))
+    answer = result.get('answer', 'Sorry, I could not find an answer.')
+    chat_history.append((question, answer))
 
-    return result['answer'].lower()
+    return answer.lower()
 
 
 # sidebar
@@ -76,15 +85,18 @@ with st.sidebar:
     st.header("Provide a valid OpenAI API key🗝")
     
     while api_key is None:
-        api_key = st.sidebar.text_input("your key:", type = "password")
+        api_key = st.sidebar.text_input("your key:", type="password")
 
-    st.header("Provide data files with relevant info📄")
-    upload = st.file_uploader("Upload a txt file")
-    
-    if upload is not None:
-        stringio = StringIO(upload.getvalue().decode("utf-8"))
-        datafile = stringio.read()
-        save_data(datafile) # save data from file in path database
+    if api_key:
+        st.header("Provide data files with relevant info📄")
+        upload = st.file_uploader("Upload a txt file")
+        
+        if upload is not None:
+            stringio = StringIO(upload.getvalue().decode("utf-8"))
+            datafile = stringio.read()
+            save_data(datafile) # save data from file in path database
+
+        # Ensure setup_langchain is called after api_key is set
         setup_langchain()
         
 
