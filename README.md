@@ -4,6 +4,7 @@
 
 A basic personal assistant/chatbot that can instantly answer your questions and complete tasks within your documents, It was developed using Large Language Models (LLMs), LangChain, and Retrieval-Augmented Generation (RAG).
 
+
 ##  Langchain Docs RAG Architecture:
 ![alt tag](pagev1.png)
 
@@ -22,7 +23,7 @@ python3 -m venv <environment-name>
 ```
 #### Ativacte the virtual environment:
 ```python
-<environment-name>\Scripts\Activate.ps1
+source venv\bin\activate
 ```
 #### Install the packages on the requirements.txt:
 ```python
@@ -32,7 +33,7 @@ pip3 install -r requirements.txt
 ## Usage
 #### After all the steps above just run the App:
 ```bash
-./app.sh
+ bash app.sh
 ```
 - Get an OpenAI API key [here](https://platform.openai.com/api-keys)
 - Submit an text file document with the relevant information to feed into the model once you run the app.
