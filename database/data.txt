@@ -1,0 +1,254 @@
+Augusto Samussone
+augustooalcides@gmail.com | (+351) 927 655 908 | www.linkedin.com/in/augustosamussone 
+ 
+COIMBRA UNIVERSITY	 Coimbra, PT
+Bachelor�s in Electrical and Computer Engineering	                                                                                   Dec 2020 - Jun 2023
+	
+TECHNICAL SKILLS
+ 
+Software: C, C++, Python, Git/Gitlab, Linux, UML, MuleSoft, AI/ML Tools, SQL, AWS Cloud.
+Hardware: Stm32, Esp32, Electronics.
+
+WORK EXPERIENCE
+ 
+
+Deloitte	  Coimbra, PT
+Technology Analyst	    May 2024 � Present
+�	Designed and managed APIs, optimizing CRM and database integration to enhance data flow and business insights.
+�	Automated system integrations and data transformation, boosting performance and customer experience.
+Bosch	        Ovar, PT
+Embedded Linux Engineer Trainee	Mar 2024 � May 2024
+�	Developed and optimized C-based firmware for AI-enabled security cameras, improving radar detection accuracy and overall system performance. 
+�	Implemented embedded Linux solutions ensuring robust, scalable integration with AI-driven security features.
+Institute of Systems and Robotics	  Coimbra, PT
+Research Technician		  July  2023� Fev 2024
+�	Managed, designed, and created the system�s software architecture of a social robot project.
+�	Developed features for natural language and image processing, thus improving the system's interaction with users.
+Bot Olympics	  Coimbra, PT
+Technical and Regulatory team member                                                                                           Dec 2022 � May 2023
+�	Tested the robot�s hardware and firmware ensuring proper functioning on the competition day.
+�	Reviewed and participated in the decision to change rules, thus improving the course of the competition.
+
+   The Loop Co.	       Coimbra, PT
+   Embedded Systems Engineer Intern						                                     July - Sep 2022
+�	Refactored firmware, improving the system�s performance and usability of the product. 
+�	Implemented connectivity and OTA updates features increasing the system�s maintainability and scalability. 
+   Mais Energiaa	       Maputo, MZ
+   Co-Founder						                       			 	    Jun 2020 - Jan 2022
+�	Ensured great negotiations and partnerships with the suppliers, easing business growth.
+�	Responsible for managing the customer technical support and leading the technical team, Guaranteed a 
+a good relationship with customers and a good working environment. 
+		 
+CERTIFICATIONS 
+ 	        
+�	AWS Certified Cloud Practitioner.
+�	MuleSoft Certified Developer - Level 1
+�	Artificial Intelligence Fundamentals.
+Motivations to work at bosch:
+- 2 anos, connnect day bla-bla.....
+- nos requisistos vem as skills que gostava de melhorar(embedded)
+- acredito que seja uma compania que tenha bons profissionais e que me podem ajudar a me a desenvolver;
+- tecnologia de ponto, qualidade, oque aumenta meu interesse de querrer estar ai a desenvolver com vosco;
+
+
+About me:
+ * qualities:
+	- curiosity and proactivity ;
+	- resiliency and adaptability;
+	- orientado a objecto.
+	- i don´t usually get stressed;
+ 
+* bad traits:
+	- falar em publico; fico nervoso;
+	- exagerar nos detalhes; ou seja ficar muito tempo a desenvolver algo e exagerar enato a ideia é dar feedback constante;
+
+
+Questions for them:
+	- size of the team ?
+	- what do you as a manager expect from a intern ?	 
+	- In the description i saw that quality, security, is valued, so i 
+	  would like to understand what would be the standards/ best pactices to follow? 
+	- what are some specific certifications that i might have to do for this role ?
+
+
+A bosch:
+	- +1000 workers;
+	- desenvolve: sistemas de segurança e comunicação, alarmes de incêndios, displays eletrónicos;
+	(videovigilância, deteção de incêndio e comunicação)
+
+NO FIM:
+	- I AM EXCITED FOR THIS ROLE, WHAT WOULD BE THE NEXT STEPS?
+
+Depois da Entrevista:
+	- Mandar um e-mail a HR a agradecer mais uma vez para a oportunidade;
+
+=================================================================================================================================
+Microprocessor: The central processing unit (CPU) of a computer, responsible for executing instructions and performing calculations. It relies on external components for memory and input/output (I/O) operations.
+
+Microcontroller: A "computer-on-a-chip" that integrates a CPU, memory (RAM and ROM), and various input/output peripherals (timers, ADCs, etc.) into a single unit.
+
+What is an Embedded System?
+
+Definition: An embedded system is a specialized computer system designed to perform a specific function or set of functions within a larger device or system. It's like a mini-computer tucked inside your appliances or machines.
+
+
+
+
+
+
+Motivations to work at bosch:
+- 2 anos, connnect day bla-bla.....
+- nos requisistos vem as skills que gostava de melhorar(embedded)
+- acredito que seja uma compania que tenha bons profissionais e que me podem ajudar a me a desenvolver;
+- tecnologia de ponto, qualidade, oque aumenta meu interesse de querrer estar ai a desenvolver com vosco;
+
+
+About me:
+ * qualities:
+	- curiosity and proactivity ;
+	- resiliency and adaptability;
+	- orientado a objecto.
+	- i don´t usually get stressed;
+ 
+* bad traits:
+	- falar em publico; fico nervoso;
+	- exagerar nos detalhes; ou seja ficar muito tempo a desenvolver algo e exagerar enato a ideia é dar feedback constante;
+
+
+Questions for them:
+	- size of the team ?
+	- what do you as a manager expect from a intern ?	 
+	- In the description i saw that quality, security, is valued, so i 
+	  would like to understand what would be the standards/ best pactices to follow? 
+	- what are some specific certifications that i might have to do for this role ?
+
+
+A bosch:
+	- +1000 workers;
+	- desenvolve: sistemas de segurança e comunicação, alarmes de incêndios, displays eletrónicos;
+	(videovigilância, deteção de incêndio e comunicação)
+
+NO FIM:
+	- I AM EXCITED FOR THIS ROLE, WHAT WOULD BE THE NEXT STEPS?
+
+Depois da Entrevista:
+	- Mandar um e-mail a HR a agradecer mais uma vez para a oportunidade;
+
+=================================================================================================================================
+Microprocessor: The central processing unit (CPU) of a computer, responsible for executing instructions and performing calculations. It relies on external components for memory and input/output (I/O) operations.
+
+Microcontroller: A "computer-on-a-chip" that integrates a CPU, memory (RAM and ROM), and various input/output peripherals (timers, ADCs, etc.) into a single unit.
+
+What is an Embedded System?
+
+Definition: An embedded system is a specialized computer system designed to perform a specific function or set of functions within a larger device or system. It's like a mini-computer tucked inside your appliances or machines.
+
+
+
+
+
+
+Motivations to work at bosch:
+- 2 anos, connnect day bla-bla.....
+- nos requisistos vem as skills que gostava de melhorar(embedded)
+- acredito que seja uma compania que tenha bons profissionais e que me podem ajudar a me a desenvolver;
+- tecnologia de ponto, qualidade, oque aumenta meu interesse de querrer estar ai a desenvolver com vosco;
+
+
+About me:
+ * qualities:
+	- curiosity and proactivity ;
+	- resiliency and adaptability;
+	- orientado a objecto.
+	- i don´t usually get stressed;
+ 
+* bad traits:
+	- falar em publico; fico nervoso;
+	- exagerar nos detalhes; ou seja ficar muito tempo a desenvolver algo e exagerar enato a ideia é dar feedback constante;
+
+
+Questions for them:
+	- size of the team ?
+	- what do you as a manager expect from a intern ?	 
+	- In the description i saw that quality, security, is valued, so i 
+	  would like to understand what would be the standards/ best pactices to follow? 
+	- what are some specific certifications that i might have to do for this role ?
+
+
+A bosch:
+	- +1000 workers;
+	- desenvolve: sistemas de segurança e comunicação, alarmes de incêndios, displays eletrónicos;
+	(videovigilância, deteção de incêndio e comunicação)
+
+NO FIM:
+	- I AM EXCITED FOR THIS ROLE, WHAT WOULD BE THE NEXT STEPS?
+
+Depois da Entrevista:
+	- Mandar um e-mail a HR a agradecer mais uma vez para a oportunidade;
+
+=================================================================================================================================
+Microprocessor: The central processing unit (CPU) of a computer, responsible for executing instructions and performing calculations. It relies on external components for memory and input/output (I/O) operations.
+
+Microcontroller: A "computer-on-a-chip" that integrates a CPU, memory (RAM and ROM), and various input/output peripherals (timers, ADCs, etc.) into a single unit.
+
+What is an Embedded System?
+
+Definition: An embedded system is a specialized computer system designed to perform a specific function or set of functions within a larger device or system. It's like a mini-computer tucked inside your appliances or machines.
+
+
+
+
+
+
+Motivations to work at bosch:
+- 2 anos, connnect day bla-bla.....
+- nos requisistos vem as skills que gostava de melhorar(embedded)
+- acredito que seja uma compania que tenha bons profissionais e que me podem ajudar a me a desenvolver;
+- tecnologia de ponto, qualidade, oque aumenta meu interesse de querrer estar ai a desenvolver com vosco;
+
+
+About me:
+ * qualities:
+	- curiosity and proactivity ;
+	- resiliency and adaptability;
+	- orientado a objecto.
+	- i don´t usually get stressed;
+ 
+* bad traits:
+	- falar em publico; fico nervoso;
+	- exagerar nos detalhes; ou seja ficar muito tempo a desenvolver algo e exagerar enato a ideia é dar feedback constante;
+
+
+Questions for them:
+	- size of the team ?
+	- what do you as a manager expect from a intern ?	 
+	- In the description i saw that quality, security, is valued, so i 
+	  would like to understand what would be the standards/ best pactices to follow? 
+	- what are some specific certifications that i might have to do for this role ?
+
+
+A bosch:
+	- +1000 workers;
+	- desenvolve: sistemas de segurança e comunicação, alarmes de incêndios, displays eletrónicos;
+	(videovigilância, deteção de incêndio e comunicação)
+
+NO FIM:
+	- I AM EXCITED FOR THIS ROLE, WHAT WOULD BE THE NEXT STEPS?
+
+Depois da Entrevista:
+	- Mandar um e-mail a HR a agradecer mais uma vez para a oportunidade;
+
+=================================================================================================================================
+Microprocessor: The central processing unit (CPU) of a computer, responsible for executing instructions and performing calculations. It relies on external components for memory and input/output (I/O) operations.
+
+Microcontroller: A "computer-on-a-chip" that integrates a CPU, memory (RAM and ROM), and various input/output peripherals (timers, ADCs, etc.) into a single unit.
+
+What is an Embedded System?
+
+Definition: An embedded system is a specialized computer system designed to perform a specific function or set of functions within a larger device or system. It's like a mini-computer tucked inside your appliances or machines.
+
+
+
+
+
+
