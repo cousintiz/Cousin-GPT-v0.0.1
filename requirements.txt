@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 chromadb
 openai
 unstructured
@@ -5,3 +6,13 @@ langchain
 tiktoken
 streamlit
 langchain-openai
+=======
+chromadb
+openai
+unstructured
+langchain
+tiktoken
+streamlit
+langchain-community 
+langchain-openai
+>>>>>>> e119edc4e00f1f272d612fb57a1cbf52ea2793dd
