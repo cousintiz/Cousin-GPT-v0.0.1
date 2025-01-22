@@ -1,21 +1,13 @@
 import streamlit as st
 from io import StringIO
 from langchain.chains import ConversationalRetrievalChain
-from langchain_community.vectorstores import Chroma
+from langchain_community.vectorstores import FAISS
 from langchain_openai import ChatOpenAI
 from langchain_community.document_loaders import DirectoryLoader
 from langchain_openai import OpenAIEmbeddings
 from langchain.indexes import VectorstoreIndexCreator
 from langchain.memory import ConversationBufferMemory	
 import importlib.util
-from chromadb.config import Settings
-
-# Force ChromaDB to use DuckDB explicitly
-chroma_settings = Settings(
-    chroma_db_impl="duckdb",
-    persist_directory="./chroma_db"  # Ensures data is stored properly
-)
-
 
 # Check if libmagic is installed
 libmagic_spec = importlib.util.find_spec("magic")
@@ -42,7 +34,7 @@ infofile = "./database/data.txt"
 pre_prompt = "You are a friendly and helpful teaching assistant called Cousin. You explain concepts in great depth using simple terms."
 
 # titulo da pagina
-st.markdown("<h1 style='text-align: center; color: white;'>Marta-GPT v1.0.1</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; color: white;'>Marta-GPT v0.0.1</h1>", unsafe_allow_html=True)
 
 
 def setup_langchain():
@@ -54,13 +46,7 @@ def setup_langchain():
     # set local docs for langchain
     embeddings = OpenAIEmbeddings(api_key = api_key)
     loader = DirectoryLoader("database/", glob= "**/*.txt")
-    vectorstore = Chroma(
-        embedding_function=embeddings,
-        persist_directory="./chroma_db",  # Ensures persistence
-        client_settings=chroma_settings   # Uses DuckDB instead of SQLite
-    )
-
-    index = VectorstoreIndexCreator(vectorstore_cls=lambda _: vectorstore).from_loaders([loader])
+    index = VectorstoreIndexCreator(vectorstore_cls=FAISS,embedding = embeddings).from_loaders([loader])
 
     #set up chain params:
     llm = ChatOpenAI(model = gpt_model, api_key = api_key, temperature = 1, max_tokens = 128)
