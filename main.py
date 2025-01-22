@@ -9,8 +9,11 @@ from langchain.indexes import VectorstoreIndexCreator
 from langchain.memory import ConversationBufferMemory	
 import importlib.util
 import nltk
-nltk.download('punkt_tab')
 
+nltk.download('punkt_tab')
+nltk.download('averaged_perceptron_tagger_eng')
+
+  
 # Check if libmagic is installed
 libmagic_spec = importlib.util.find_spec("magic")
 if libmagic_spec is None:
