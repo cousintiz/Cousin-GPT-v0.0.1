@@ -54,7 +54,7 @@ def setup_langchain():
     # set local docs for langchain
     embeddings = OpenAIEmbeddings(api_key = api_key)
     loader = DirectoryLoader("database/", glob= "**/*.txt")
-       vectorstore = Chroma(
+    vectorstore = Chroma(
         embedding_function=embeddings,
         persist_directory="./chroma_db",  # Ensures persistence
         client_settings=chroma_settings   # Uses DuckDB instead of SQLite
