@@ -8,6 +8,25 @@ from langchain_openai import OpenAIEmbeddings
 from langchain.indexes import VectorstoreIndexCreator
 from langchain.memory import ConversationBufferMemory	
 import importlib.util
+import sqlite3
+import subprocess
+
+# Check SQLite version
+required_version = (3, 35, 0)
+current_version = tuple(map(int, sqlite3.sqlite_version.split(".")))
+
+if current_version < required_version:
+    print(f"Upgrading SQLite: Current version {sqlite3.sqlite_version}, Required {required_version}")
+    
+    # Upgrade SQLite using pip if needed
+    subprocess.run(["pip", "install", "pysqlite3-binary"], check=True)
+    
+    # Reload SQLite module
+    import importlib
+    import sys
+    sys.modules["sqlite3"] = importlib.import_module("pysqlite3")
+    
+    print(f"Updated SQLite version: {sqlite3.sqlite_version}")
 
 # Check if libmagic is installed
 libmagic_spec = importlib.util.find_spec("magic")
