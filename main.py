@@ -8,25 +8,6 @@ from langchain_openai import OpenAIEmbeddings
 from langchain.indexes import VectorstoreIndexCreator
 from langchain.memory import ConversationBufferMemory	
 import importlib.util
-import sqlite3
-import subprocess
-
-# Check SQLite version
-required_version = (3, 35, 0)
-current_version = tuple(map(int, sqlite3.sqlite_version.split(".")))
-
-if current_version < required_version:
-    print(f"Upgrading SQLite: Current version {sqlite3.sqlite_version}, Required {required_version}")
-    
-    # Upgrade SQLite using pip if needed
-    subprocess.run(["pip", "install", "pysqlite3-binary"], check=True)
-    
-    # Reload SQLite module
-    import importlib
-    import sys
-    sys.modules["sqlite3"] = importlib.import_module("pysqlite3")
-    
-    print(f"Updated SQLite version: {sqlite3.sqlite_version}")
 
 # Check if libmagic is installed
 libmagic_spec = importlib.util.find_spec("magic")
@@ -65,7 +46,7 @@ def setup_langchain():
     # set local docs for langchain
     embeddings = OpenAIEmbeddings(api_key = api_key)
     loader = DirectoryLoader("database/", glob= "**/*.txt")
-    index = VectorstoreIndexCreator(vectorstore_cls=Chroma,embedding = embeddings).from_loaders([loader])
+    index = VectorstoreIndexCreator(vectorstore_cls=Chroma,embedding = embeddings,persist_directory=None).from_loaders([loader])
 
     #set up chain params:
     llm = ChatOpenAI(model = gpt_model, api_key = api_key, temperature = 1, max_tokens = 128)
