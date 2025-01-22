@@ -48,6 +48,10 @@ def setup_langchain():
     chat_history = []
     memory = ConversationBufferMemory(memory_key="chat_history",return_messages=True)
 
+    if not api_key or api_key.strip() == "":
+      st.error("⚠️ Please provide a valid OpenAI API key in the sidebar.")
+      return
+      
     # set local docs for langchain
     embeddings = OpenAIEmbeddings(api_key = api_key)
     loader = DirectoryLoader("database/", glob= "**/*.txt")
