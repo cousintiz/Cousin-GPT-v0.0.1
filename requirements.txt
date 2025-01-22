@@ -6,5 +6,4 @@ streamlit
 nltk
 langchain-community 
 langchain-openai
-chromadb
-duckdb
+faiss-cpu
