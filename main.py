@@ -8,6 +8,8 @@ from langchain_openai import OpenAIEmbeddings
 from langchain.indexes import VectorstoreIndexCreator
 from langchain.memory import ConversationBufferMemory	
 import importlib.util
+import nltk
+nltk.download('punkt_tab')
 
 # Check if libmagic is installed
 libmagic_spec = importlib.util.find_spec("magic")
