@@ -4,5 +4,6 @@ unstructured
 langchain
 tiktoken
 streamlit
+nltk
 langchain-community 
 langchain-openai
