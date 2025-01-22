@@ -7,4 +7,3 @@ nltk
 langchain-community 
 langchain-openai
 chromadb
-sqlite3
