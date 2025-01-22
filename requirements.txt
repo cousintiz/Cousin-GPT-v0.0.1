@@ -1,4 +1,5 @@
 chromadb
+sqlite3
 openai
 unstructured
 langchain
