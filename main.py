@@ -8,6 +8,10 @@ from langchain_openai import OpenAIEmbeddings
 from langchain.indexes import VectorstoreIndexCreator
 from langchain.memory import ConversationBufferMemory	
 import importlib.util
+from chromadb.config import Settings
+
+# Force ChromaDB to use DuckDB (avoids SQLite dependency)
+chroma_settings = Settings(chroma_db_impl="duckdb")
 
 # Check if libmagic is installed
 libmagic_spec = importlib.util.find_spec("magic")
@@ -46,7 +50,7 @@ def setup_langchain():
     # set local docs for langchain
     embeddings = OpenAIEmbeddings(api_key = api_key)
     loader = DirectoryLoader("database/", glob= "**/*.txt")
-    index = VectorstoreIndexCreator(vectorstore_cls=Chroma,embedding = embeddings,persist_directory=None).from_loaders([loader])
+    index = VectorstoreIndexCreator(vectorstore_cls=Chroma,embedding = embeddings,settings=chroma_settings).from_loaders([loader])
 
     #set up chain params:
     llm = ChatOpenAI(model = gpt_model, api_key = api_key, temperature = 1, max_tokens = 128)
