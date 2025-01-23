@@ -92,21 +92,33 @@ def marta(question: str) -> str:
 # sidebar
 with st.sidebar:
     
-    st.header("Provide a valid OpenAI API key🗝")
+  st.sidebar.header("Provide a valid OpenAI API key 🗝")
+  api_key = st.sidebar.text_input("Enter your API key:", type="password")
+  
+  if not api_key:
+      st.warning("⚠️ Please enter a valid OpenAI API key to proceed.")
+      st.stop()  # Stop execution until the user provides an API key
     
-    while api_key is None:
-        api_key = st.sidebar.text_input("your key:", type="password")
+  st.header("Provide data files with relevant info 📄")
+  upload = st.file_uploader("Upload a .txt file", type=["txt"])
+  
+  if upload is None:
+      st.warning("⚠️ Please upload a valid .txt file to proceed.")
+      st.stop()  # Stop execution until the user uploads a file
+
       
-    if api_key:
-        st.header("Provide data files with relevant info📄")
-      
-    while upload is None:
-        upload = st.file_uploader("Upload a txt file")
-      
-    if upload:
-        stringio = StringIO(upload.getvalue().decode("utf-8"))
-        datafile = stringio.read()
-        save_data(datafile) # save data from file in path database
+  if upload is not None:
+      try:
+          stringio = StringIO(upload.getvalue().decode("utf-8"))
+          datafile = stringio.read().strip()
+  
+          if not datafile:
+              st.error("⚠️ Uploaded file is empty. Please upload a valid text file.")
+              st.stop()
+  
+          save_data(datafile)  # Save data from file to the database
+      except Exception as e:
+          st.error(f"❌ Error reading the file: {e}")
 
         # Ensure setup_langchain is called after api_key is set
         setup_langchain()
