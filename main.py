@@ -31,6 +31,7 @@ index = None
 retriever = None
 llm = None
 api_key = None 
+upload = None
 
 # path to database
 infofile = "./database/data.txt"  
@@ -98,7 +99,9 @@ with st.sidebar:
 
     if api_key:
         st.header("Provide data files with relevant info📄")
-        upload = st.file_uploader("Upload a txt file")
+      
+        while upload is None:
+          upload = st.file_uploader("Upload a txt file")
         
         if upload is not None:
             stringio = StringIO(upload.getvalue().decode("utf-8"))
