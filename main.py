@@ -39,7 +39,7 @@ infofile = "./database/data.txt"
 pre_prompt = "You are a friendly and helpful teaching assistant called Cousin. You explain concepts in great depth using simple terms."
 
 # titulo da pagina
-st.markdown("<h1 style='text-align: center; color: white;'>Marta-GPT v0.0.1</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; color: white;'>Marta-GPT v1.0.1</h1>", unsafe_allow_html=True)
 
 
 def setup_langchain():
