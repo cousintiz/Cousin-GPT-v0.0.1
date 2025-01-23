@@ -106,7 +106,6 @@ with st.sidebar:
       st.warning("⚠️ Please upload a valid .txt file to proceed.")
       st.stop()  # Stop execution until the user uploads a file
 
-      
   if upload is not None:
       try:
           stringio = StringIO(upload.getvalue().decode("utf-8"))
