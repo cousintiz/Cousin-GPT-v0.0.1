@@ -101,7 +101,7 @@ with st.sidebar:
         st.header("Provide data files with relevant info📄")
       
         while upload is None:
-          upload = st.file_uploader("Upload a txt file")
+            upload = st.file_uploader("Upload a txt file")
         
         if upload is not None:
             stringio = StringIO(upload.getvalue().decode("utf-8"))
