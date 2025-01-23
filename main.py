@@ -6,9 +6,13 @@ from langchain_openai import ChatOpenAI
 from langchain_community.document_loaders import DirectoryLoader
 from langchain_openai import OpenAIEmbeddings
 from langchain.indexes import VectorstoreIndexCreator
-from langchain.memory import ConversationBufferMemory	
+from langchain.memory import ConversationBufferMemory
 import importlib.util
 import nltk
+import os
+import fitz  # PyMuPDF for PDF parsing
+import docx  # python-docx for Word files
+import pandas as pd
 
 nltk.download('punkt_tab')
 nltk.download('averaged_perceptron_tagger_eng')
@@ -34,13 +38,66 @@ api_key = None
 upload = None
 
 # path to database
-infofile = "./database/data.txt"  
+DATA_DIR = "./database/"
+os.makedirs(DATA_DIR, exist_ok=True)
 
 # assistant prompt
 pre_prompt = "You are a friendly and helpful teaching assistant called Cousin. You explain concepts in great depth using simple terms."
 
 # titulo da pagina
 st.markdown("<h1 style='text-align: center; color: white;'>Marta-GPT v1.0.1</h1>", unsafe_allow_html=True)
+
+
+def extract_text_from_pdf(uploaded_file):
+    """Extract text from an uploaded PDF file."""
+    text = ""
+    try:
+        with fitz.open(stream=uploaded_file.getvalue(), filetype="pdf") as doc:
+            for page in doc:
+                text += page.get_text("text") + "\n"
+    except Exception as e:
+        st.error(f"❌ Error reading PDF: {e}")
+    return text
+
+
+def extract_text_from_docx(docx_file):
+    """Extract text from a Word document."""
+    text = ""
+    try:
+        doc = docx.Document(docx_file)
+        text = "\n".join([para.text for para in doc.paragraphs])
+    except Exception as e:
+        st.error(f"Error reading DOCX: {e}")
+    return text
+
+
+def extract_text_from_csv(csv_file):
+    """Extract text from a CSV file."""
+    text = ""
+    try:
+        df = pd.read_csv(csv_file)
+        text = df.to_string(index=False)  # Convert CSV content to text
+    except Exception as e:
+        st.error(f"Error reading CSV: {e}")
+    return text
+
+
+def process_uploaded_file(uploaded_file):
+    """Process different file types and extract text."""
+    file_extension = uploaded_file.name.split(".")[-1].lower()
+
+    if file_extension == "pdf":
+        return extract_text_from_pdf(uploaded_file)
+    elif file_extension == "docx":
+        return extract_text_from_docx(uploaded_file)
+    elif file_extension == "csv":
+        return extract_text_from_csv(uploaded_file)
+    elif file_extension == "txt":
+        stringio = StringIO(uploaded_file.getvalue().decode("utf-8"))
+        return stringio.read()
+    else:
+        st.error(f"❌ Unsupported file format: {file_extension}")
+        return None
 
 
 def setup_langchain():
@@ -53,26 +110,20 @@ def setup_langchain():
       st.error("⚠️ Please provide a valid OpenAI API key in the sidebar.")
       return
       
-    # set local docs for langchain
-    embeddings = OpenAIEmbeddings(api_key = api_key)
-    loader = DirectoryLoader("database/", glob= "**/*.txt")
-    index = VectorstoreIndexCreator(vectorstore_cls=FAISS,embedding = embeddings).from_loaders([loader])
+    # Set local docs for LangChain
+    embeddings = OpenAIEmbeddings(api_key=api_key)
+    loader = DirectoryLoader(DATA_DIR, glob="**/*.*")  # Load all file types
+
+    docs = loader.load()  # Load the documents
+    if not docs or len(docs) == 0:
+        st.warning("No documents found. Upload files before starting.")
+        return
+
+    index = VectorstoreIndexCreator(vectorstore_cls=FAISS, embedding=embeddings).from_documents(docs)
 
     #set up chain params:
-    llm = ChatOpenAI(model = gpt_model, api_key = api_key, temperature = 1, max_tokens = 128)
+    llm = ChatOpenAI(model = gpt_model, api_key = api_key, temperature = 0.7, max_tokens = 128)
     retriever = index.vectorstore.as_retriever(search_type="mmr", search_kwargs={"k": 2, "score_threshold": 1, "fetch_k": 16})
-
-
-def save_data(data: str) -> None:
-    """
-    Receives User data, to be embedded to the model
-    """
-    try:
-        with open(infofile, 'a') as file:
-            file.write(data)
-        print("Successfully saved data.")
-    except Exception as e:
-        print(f"Error {e} has occurred")
 
 
 def marta(question: str) -> str:
@@ -100,27 +151,24 @@ with st.sidebar:
         st.stop()  # Stop execution until the user provides an API key
         
     st.header("Provide data files with relevant info 📄")
-    upload = st.file_uploader("Upload a .txt file", type=["txt"])
+    upload = st.file_uploader("Upload a file", type=["pdf", "docx", "txt", "csv"])
     
     if upload is None:
-        st.warning("⚠️ Please upload a valid .txt file to proceed.")
+        st.warning("⚠️ Please upload a valid file to proceed.")
         st.stop()  # Stop execution until the user uploads a file
 
-    if upload is not None:
-        try:
-            stringio = StringIO(upload.getvalue().decode("utf-8"))
-            datafile = stringio.read().strip()
-    
-            if not datafile:
-                st.error("⚠️ Uploaded file is empty. Please upload a valid text file.")
-                st.stop()
-    
-            save_data(datafile)  # Save data from file to the database
-        except Exception as e:
-            st.error(f"❌ Error reading the file: {e}")
+    if upload:
+        extracted_text = process_uploaded_file(upload)
+        
+        if extracted_text:
+            file_path = os.path.join(DATA_DIR, upload.name)
+            with open(file_path, "w", encoding="utf-8") as f:
+                f.write(extracted_text)
+
+            st.success(f"✅ File '{upload.name}' uploaded successfully!")
 
             # Ensure setup_langchain is called after api_key is set
-        setup_langchain()
+    setup_langchain()
         
 
 # Store LLM generated responses
