@@ -96,17 +96,17 @@ with st.sidebar:
     
     while api_key is None:
         api_key = st.sidebar.text_input("your key:", type="password")
-
+      
     if api_key:
         st.header("Provide data files with relevant info📄")
       
-        while upload is None:
-            upload = st.file_uploader("Upload a txt file")
-        
-        if upload is not None:
-            stringio = StringIO(upload.getvalue().decode("utf-8"))
-            datafile = stringio.read()
-            save_data(datafile) # save data from file in path database
+    while upload is None:
+        upload = st.file_uploader("Upload a txt file")
+      
+    if upload:
+        stringio = StringIO(upload.getvalue().decode("utf-8"))
+        datafile = stringio.read()
+        save_data(datafile) # save data from file in path database
 
         # Ensure setup_langchain is called after api_key is set
         setup_langchain()
