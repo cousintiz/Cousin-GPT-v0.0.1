@@ -4,6 +4,9 @@ langchain
 tiktoken
 streamlit
 nltk
+pymupdf 
+python-docx 
+pandas
 langchain-community 
 langchain-openai
 faiss-cpu
