@@ -1,14 +1,19 @@
 import streamlit as st
 from io import StringIO
 from langchain.chains import ConversationalRetrievalChain
-from langchain_community.vectorstores import Chroma
+from langchain_community.vectorstores import FAISS
 from langchain_openai import ChatOpenAI
 from langchain_community.document_loaders import DirectoryLoader
 from langchain_openai import OpenAIEmbeddings
 from langchain.indexes import VectorstoreIndexCreator
 from langchain.memory import ConversationBufferMemory	
 import importlib.util
+import nltk
 
+nltk.download('punkt_tab')
+nltk.download('averaged_perceptron_tagger_eng')
+
+  
 # Check if libmagic is installed
 libmagic_spec = importlib.util.find_spec("magic")
 if libmagic_spec is None:
@@ -26,6 +31,7 @@ index = None
 retriever = None
 llm = None
 api_key = None 
+upload = None
 
 # path to database
 infofile = "./database/data.txt"  
@@ -34,7 +40,7 @@ infofile = "./database/data.txt"
 pre_prompt = "You are a friendly and helpful teaching assistant called Cousin. You explain concepts in great depth using simple terms."
 
 # titulo da pagina
-st.markdown("<h1 style='text-align: center; color: white;'>Marta-GPT v0.0.1</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; color: white;'>Marta-GPT v1.0.1</h1>", unsafe_allow_html=True)
 
 
 def setup_langchain():
@@ -43,10 +49,14 @@ def setup_langchain():
     chat_history = []
     memory = ConversationBufferMemory(memory_key="chat_history",return_messages=True)
 
+    if not api_key or api_key.strip() == "":
+      st.error("⚠️ Please provide a valid OpenAI API key in the sidebar.")
+      return
+      
     # set local docs for langchain
     embeddings = OpenAIEmbeddings(api_key = api_key)
     loader = DirectoryLoader("database/", glob= "**/*.txt")
-    index = VectorstoreIndexCreator(vectorstore_cls=Chroma,embedding = embeddings).from_loaders([loader])
+    index = VectorstoreIndexCreator(vectorstore_cls=FAISS,embedding = embeddings).from_loaders([loader])
 
     #set up chain params:
     llm = ChatOpenAI(model = gpt_model, api_key = api_key, temperature = 1, max_tokens = 128)
@@ -82,21 +92,34 @@ def marta(question: str) -> str:
 # sidebar
 with st.sidebar:
     
-    st.header("Provide a valid OpenAI API key🗝")
+    st.sidebar.header("Provide a valid OpenAI API key 🗝")
+    api_key = st.sidebar.text_input("Enter your API key:", type="password")
     
-    while api_key is None:
-        api_key = st.sidebar.text_input("your key:", type="password")
-
-    if api_key:
-        st.header("Provide data files with relevant info📄")
-        upload = st.file_uploader("Upload a txt file")
+    if not api_key:
+        st.warning("⚠️ Please enter a valid OpenAI API key to proceed.")
+        st.stop()  # Stop execution until the user provides an API key
         
-        if upload is not None:
-            stringio = StringIO(upload.getvalue().decode("utf-8"))
-            datafile = stringio.read()
-            save_data(datafile) # save data from file in path database
+    st.header("Provide data files with relevant info 📄")
+    upload = st.file_uploader("Upload a .txt file", type=["txt"])
+    
+    if upload is None:
+        st.warning("⚠️ Please upload a valid .txt file to proceed.")
+        st.stop()  # Stop execution until the user uploads a file
 
-        # Ensure setup_langchain is called after api_key is set
+    if upload is not None:
+        try:
+            stringio = StringIO(upload.getvalue().decode("utf-8"))
+            datafile = stringio.read().strip()
+    
+            if not datafile:
+                st.error("⚠️ Uploaded file is empty. Please upload a valid text file.")
+                st.stop()
+    
+            save_data(datafile)  # Save data from file to the database
+        except Exception as e:
+            st.error(f"❌ Error reading the file: {e}")
+
+            # Ensure setup_langchain is called after api_key is set
         setup_langchain()
         
 
@@ -127,5 +150,3 @@ if prompt is not None:
 
     message = {"role": "assistant", "content": answer}
     st.session_state.messages.append(message)
-
-

@@ -1,100 +1,85 @@
-<<<<<<< HEAD
 <h1 align="center">
-    Marta-GPT v0.0.1
+    Marta-GPT v1.0.1
 </h1>
 
-A basic personal assistant/chatbot that can instantly answer your questions and complete tasks within your documents, It was developed using Large Language Models (LLMs), LangChain, and Retrieval-Augmented Generation (RAG).
+A basic personal assistant/chatbot that can instantly answer your questions and complete tasks using your documents. Developed using Large Language Models (LLMs), LangChain, and Retrieval-Augmented Generation (RAG).
 
-##  Langchain Docs RAG Architecture:
+🚀 **Live App:** [Marta-GPT](https://marta-gpt.streamlit.app/)
+
+## 📖 Langchain Docs RAG Architecture:
 ![alt tag](pagev1.png)
 
-## 💻Installation guide:
-#### Clone the repository
-```python
-git@github.com:cousintiz/Marta-GPT-v0.0.1.git
-```
-#### If you have python3.10 intalled run this shell script otherwise follow the steps below:
+---
+## 💻 Installation Guide (Run Locally)
+
+### **1️⃣ Clone the repository**
 ```bash
-./setup.sh
-```
-#### Create a virtual environment for the project's dependencies:
-```python
-python3 -m venv <environment-name>
-```
-#### Ativacte the virtual environment:
-```python
-<environment-name>\Scripts\Activate.ps1
-```
-#### Install the packages on the requirements.txt:
-```python
-pip3 install -r requirements.txt
+git clone git@github.com:cousintiz/Marta-GPT-v0.0.1.git
+cd Marta-GPT-v0.0.1
 ```
 
-## Usage
-#### After all the steps above just run the App:
+### **2️⃣ Create a virtual environment**
 ```bash
-./app.sh
+python3 -m venv venv
 ```
-- Get an OpenAI API key [here](https://platform.openai.com/api-keys)
-- Submit an text file document with the relevant information to feed into the model once you run the app.
-#### This window window will be opened on your browser
-![alt tag](pagev0.png)
 
-## ⚒️Development Stack
+### **3️⃣ Activate the virtual environment**
+#### **MacOS/Linux:**
+```bash
+source venv/bin/activate
+```
+#### **Windows (Command Prompt):**
+```cmd
+venv\Scripts\activate
+```
+#### **Windows (PowerShell):**
+```powershell
+venv\Scripts\Activate.ps1
+```
+
+### **4️⃣ Install dependencies**
+```bash
+pip install -r requirements.txt
+```
+
+### **5️⃣ Run the App Locally**
+```bash
+streamlit run main.py
+```
+
+### **6️⃣ Open the app in your browser**
+Once the app starts, it will automatically open in your default browser. If not, go to:
+```
+http://localhost:8501
+```
+
+### **7️⃣ Get an OpenAI API Key**
+- Create an OpenAI account if you don’t have one.
+- Get your API key [here](https://platform.openai.com/api-keys)
+- Enter the API key in the app when prompted.
+
+### **8️⃣ Upload Your Documents**
+- Submit a `.txt` file with relevant information to feed into the model.
+- Marta-GPT will process the file and provide intelligent answers based on your document content.
+
+## 🌐 Running on The App Cloud
+Marta-GPT is hosted online at:
+🔗 **[Marta-GPT](https://marta-gpt.streamlit.app/)**
+
+No installation is required! Simply visit the link, enter your OpenAI API key, and upload your document.
+
+---
+## ⚒️ Development Stack
 - [Langchain](https://github.com/hwchase17/langchain)
 - [Streamlit](https://streamlit.io/)
-- [GPT 3.5-Turbo](https://platform.openai.com/docs/models/gpt-3-5-turbo)
+- [GPT-4o](https://platform.openai.com/docs/models/gpt-4o)
+- [FAISS](https://github.com/facebookresearch/faiss) (Vector Search Engine)
 
-## ⚙️Contribution
-You are allowed use any part of the software or ideas found on this repository for anything, feel free to contribute, with improvements, issues or whatever you find useful...
-=======
-<h1 align="center">
-    Marta-GPT v0.0.1
-</h1>
+---
+## 🛠️ Contribution
+This project is open-source! Feel free to:
+- Submit pull requests with improvements 🛠️
+- Report bugs or issues 🐛
+- Suggest new features 🚀
 
-A basic personal assistant/chatbot that can instantly answer your questions and complete tasks within your documents, It was developed using Large Language Models (LLMs), LangChain, and Retrieval-Augmented Generation (RAG).
-
-
-##  Langchain Docs RAG Architecture:
-![alt tag](pagev1.png)
-
-## 💻Installation guide:
-#### Clone the repository
-```python
-git@github.com:cousintiz/Marta-GPT-v0.0.1.git
-```
-#### If you have python3.10 intalled run this shell script otherwise follow the steps below:
-```bash
-./setup.sh
-```
-#### Create a virtual environment for the project's dependencies:
-```python
-python3 -m venv <environment-name>
-```
-#### Ativacte the virtual environment:
-```python
-source venv\bin\activate
-```
-#### Install the packages on the requirements.txt:
-```python
-pip3 install -r requirements.txt
-```
-
-## Usage
-#### After all the steps above just run the App:
-```bash
- bash app.sh
-```
-- Get an OpenAI API key [here](https://platform.openai.com/api-keys)
-- Submit an text file document with the relevant information to feed into the model once you run the app.
-#### This window window will be opened on your browser
-![alt tag](pagev0.png)
-
-## ⚒️Development Stack
-- [Langchain](https://github.com/hwchase17/langchain)
-- [Streamlit](https://streamlit.io/)
-- [GPT 3.5-Turbo](https://platform.openai.com/docs/models/gpt-3-5-turbo)
-
-## ⚙️Contribution
-You are allowed use any part of the software or ideas found on this repository for anything, feel free to contribute, with improvements, issues or whatever you find useful...
->>>>>>> e119edc4e00f1f272d612fb57a1cbf52ea2793dd
+Any contributions are welcome! 😊
