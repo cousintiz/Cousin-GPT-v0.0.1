@@ -92,34 +92,34 @@ def marta(question: str) -> str:
 # sidebar
 with st.sidebar:
     
-  st.sidebar.header("Provide a valid OpenAI API key 🗝")
-  api_key = st.sidebar.text_input("Enter your API key:", type="password")
-  
-  if not api_key:
-      st.warning("⚠️ Please enter a valid OpenAI API key to proceed.")
-      st.stop()  # Stop execution until the user provides an API key
+    st.sidebar.header("Provide a valid OpenAI API key 🗝")
+    api_key = st.sidebar.text_input("Enter your API key:", type="password")
     
-  st.header("Provide data files with relevant info 📄")
-  upload = st.file_uploader("Upload a .txt file", type=["txt"])
-  
-  if upload is None:
-      st.warning("⚠️ Please upload a valid .txt file to proceed.")
-      st.stop()  # Stop execution until the user uploads a file
+    if not api_key:
+        st.warning("⚠️ Please enter a valid OpenAI API key to proceed.")
+        st.stop()  # Stop execution until the user provides an API key
+        
+    st.header("Provide data files with relevant info 📄")
+    upload = st.file_uploader("Upload a .txt file", type=["txt"])
+    
+    if upload is None:
+        st.warning("⚠️ Please upload a valid .txt file to proceed.")
+        st.stop()  # Stop execution until the user uploads a file
 
-  if upload is not None:
-      try:
-          stringio = StringIO(upload.getvalue().decode("utf-8"))
-          datafile = stringio.read().strip()
-  
-          if not datafile:
-              st.error("⚠️ Uploaded file is empty. Please upload a valid text file.")
-              st.stop()
-  
-          save_data(datafile)  # Save data from file to the database
-      except Exception as e:
-          st.error(f"❌ Error reading the file: {e}")
+    if upload is not None:
+        try:
+            stringio = StringIO(upload.getvalue().decode("utf-8"))
+            datafile = stringio.read().strip()
+    
+            if not datafile:
+                st.error("⚠️ Uploaded file is empty. Please upload a valid text file.")
+                st.stop()
+    
+            save_data(datafile)  # Save data from file to the database
+        except Exception as e:
+            st.error(f"❌ Error reading the file: {e}")
 
-        # Ensure setup_langchain is called after api_key is set
+            # Ensure setup_langchain is called after api_key is set
         setup_langchain()
         
 
