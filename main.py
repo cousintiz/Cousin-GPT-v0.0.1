@@ -9,8 +9,8 @@ from langchain.indexes import VectorstoreIndexCreator
 from langchain.memory import ConversationBufferMemory
 import importlib.util
 import nltk
-import os
 from dotenv import load_dotenv
+import os
 import fitz  # PyMuPDF for PDF parsing
 import docx  # python-docx for Word files
 import pandas as pd
@@ -18,7 +18,7 @@ import pandas as pd
 nltk.download('punkt_tab')
 nltk.download('averaged_perceptron_tagger_eng')
 
-
+  
 # Check if libmagic is installed
 libmagic_spec = importlib.util.find_spec("magic")
 if libmagic_spec is None:
@@ -35,9 +35,9 @@ index = None
 retriever = None
 llm = None
 upload = None
+fname = "Chat w/ your Docs!"
 gpt_model = "gpt-4o-mini"
 api_key = os.getenv('API_KEY')
-
 
 # path to database
 DATA_DIR = "./database/"
@@ -47,7 +47,7 @@ os.makedirs(DATA_DIR, exist_ok=True)
 pre_prompt = "You are a friendly and helpful teaching assistant called Cousin. You explain concepts in great depth using simple terms."
 
 # titulo da pagina
-st.markdown("<h1 style='text-align: center; color: white;'>Marta-GPT v1.0.1</h1>", unsafe_allow_html=True)
+#st.markdown(f"<h2 style='text-align: center; color: white;'>{fname}</h2>", unsafe_allow_html=True)
 
 
 def extract_text_from_pdf(uploaded_file):
@@ -145,7 +145,7 @@ def setup_langchain():
     index = VectorstoreIndexCreator(vectorstore_cls=FAISS, embedding=embeddings).from_documents(docs)
 
     #set up chain params:
-    llm = ChatOpenAI(model = gpt_model, api_key = api_key, temperature = 0.7, max_tokens = 512)
+    llm = ChatOpenAI(model = gpt_model, api_key = api_key, temperature = 0.7, max_tokens = 256)
     retriever = index.vectorstore.as_retriever(search_type="mmr", search_kwargs={"k": 2, "score_threshold": 1, "fetch_k": 16})
 
 
@@ -165,7 +165,7 @@ def marta(question: str) -> str:
 
 # sidebar
 with st.sidebar:
-    
+        
     st.header("Provide data files with relevant info 📄")
     upload = st.file_uploader("Upload a file", type=["pdf", "docx", "txt", "csv"])
     
@@ -175,17 +175,20 @@ with st.sidebar:
 
     if upload:
         extracted_text = process_uploaded_file(upload)
-        
+        fname = upload.name
         if extracted_text:
             file_path = os.path.join(DATA_DIR, upload.name)
             with open(file_path, "w", encoding="utf-8") as f:
                 f.write(extracted_text)
 
-            st.success(f"✅ File '{upload.name}' uploaded successfully!")
+            st.success(f"✅ File uploaded successfully!")
 
             # Ensure setup_langchain is called after api_key is set
-    setup_langchain()
+            setup_langchain()
         
+
+# titulo da pagina
+st.markdown(f"<h3 style='text-align: center; color: white;'>{fname}</h3>", unsafe_allow_html=True)
 
 # Store LLM generated responses
 if "messages" not in st.session_state.keys():
