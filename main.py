@@ -45,7 +45,7 @@ os.makedirs(DATA_DIR, exist_ok=True)
 pre_prompt = "You are a friendly and helpful teaching assistant called Cousin. You explain concepts in great depth using simple terms."
 
 # titulo da pagina
-st.markdown("<h1 style='text-align: center; color: white;'>Marta-GPT v1.0.1</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; color: white;'>I am just your friend, Let's chat!!!</h1>", unsafe_allow_html=True)
 
 
 def extract_text_from_pdf(uploaded_file):
