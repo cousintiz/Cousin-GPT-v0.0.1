@@ -9,6 +9,7 @@ from langchain.indexes import VectorstoreIndexCreator
 from langchain.memory import ConversationBufferMemory
 import importlib.util
 import nltk
+from dotenv import load_dotenv
 import os
 import fitz  # PyMuPDF for PDF parsing
 import docx  # python-docx for Word files
@@ -25,17 +26,17 @@ if libmagic_spec is None:
 else:
     import magic
 
-gpt_model = "gpt-4o-mini"
-
 # set local docs for langchain
+load_dotenv()
 chat_history = None
 memory = None
 loader = None
 index = None 
 retriever = None
 llm = None
-api_key = None 
 upload = None
+gpt_model = "gpt-4o-mini"
+api_key = os.getenv('API_KEY')
 
 # path to database
 DATA_DIR = "./database/"
@@ -163,13 +164,6 @@ def marta(question: str) -> str:
 
 # sidebar
 with st.sidebar:
-    
-    st.sidebar.header("Provide a valid OpenAI API key 🗝")
-    api_key = st.sidebar.text_input("Enter your API key:", type="password")
-    
-    if not api_key:
-        st.warning("⚠️ Please enter a valid OpenAI API key to proceed.")
-        st.stop()  # Stop execution until the user provides an API key
         
     st.header("Provide data files with relevant info 📄")
     upload = st.file_uploader("Upload a file", type=["pdf", "docx", "txt", "csv"])
