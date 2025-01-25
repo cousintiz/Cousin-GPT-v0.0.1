@@ -49,15 +49,32 @@ st.markdown("<h1 style='text-align: center; color: white;'>Marta-GPT v1.0.1</h1>
 
 
 def extract_text_from_pdf(uploaded_file):
-    """Extract text from an uploaded PDF file."""
+    """Extract text from an uploaded PDF file, handling corrupt files."""
     text = ""
     try:
-        with fitz.open(stream=uploaded_file.getvalue(), filetype="pdf") as doc:
+        # Read file data
+        file_bytes = uploaded_file.getvalue()
+        
+        # Validate if it's a real PDF
+        if not file_bytes.startswith(b"%PDF"):
+            st.error("❌ The uploaded file is not a valid PDF. Please upload a proper PDF document.")
+            return None
+        
+        # Process the PDF
+        with fitz.open(stream=file_bytes, filetype="pdf") as doc:
             for page in doc:
                 text += page.get_text("text") + "\n"
+
+        # Handle PDFs with only images (no text)
+        if not text.strip():
+            st.warning("⚠️ This PDF contains only images. OCR might be needed to extract text.")
+        
     except Exception as e:
         st.error(f"❌ Error reading PDF: {e}")
+        return None
+    
     return text
+
 
 
 def extract_text_from_docx(docx_file):
@@ -87,7 +104,10 @@ def process_uploaded_file(uploaded_file):
     file_extension = uploaded_file.name.split(".")[-1].lower()
 
     if file_extension == "pdf":
-        return extract_text_from_pdf(uploaded_file)
+        extracted_text = extract_text_from_pdf(uploaded_file)
+        if not extracted_text:
+            return None  # Skip if PDF processing fails
+        return extracted_text
     elif file_extension == "docx":
         return extract_text_from_docx(uploaded_file)
     elif file_extension == "csv":
@@ -98,6 +118,7 @@ def process_uploaded_file(uploaded_file):
     else:
         st.error(f"❌ Unsupported file format: {file_extension}")
         return None
+
 
 
 def setup_langchain():
@@ -122,7 +143,7 @@ def setup_langchain():
     index = VectorstoreIndexCreator(vectorstore_cls=FAISS, embedding=embeddings).from_documents(docs)
 
     #set up chain params:
-    llm = ChatOpenAI(model = gpt_model, api_key = api_key, temperature = 0.7, max_tokens = 128)
+    llm = ChatOpenAI(model = gpt_model, api_key = api_key, temperature = 0.7, max_tokens = 512)
     retriever = index.vectorstore.as_retriever(search_type="mmr", search_kwargs={"k": 2, "score_threshold": 1, "fetch_k": 16})
 
 
