@@ -181,7 +181,7 @@ with st.sidebar:
             with open(file_path, "w", encoding="utf-8") as f:
                 f.write(extracted_text)
 
-            st.success(f"✅ File '{upload.name}' uploaded successfully!")
+            st.success(f"✅ File uploaded successfully!")
 
             # Ensure setup_langchain is called after api_key is set
             setup_langchain()
