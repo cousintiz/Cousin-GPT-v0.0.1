@@ -10,3 +10,7 @@ pandas
 langchain-community 
 langchain-openai
 faiss-cpu
+unstructured[pdf]
+pdfminer.six
+unstructured[pdf,images]
+pdf2image
