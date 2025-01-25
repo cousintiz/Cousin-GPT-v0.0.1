@@ -165,6 +165,8 @@ def marta(question: str) -> str:
 
 # sidebar
 with st.sidebar:
+
+    global fname
         
     st.header("Provide data files with relevant info 📄")
     upload = st.file_uploader("Upload a file", type=["pdf", "docx", "txt", "csv"])
@@ -182,6 +184,8 @@ with st.sidebar:
                 f.write(extracted_text)
 
             st.success(f"✅ File '{upload.name}' uploaded successfully!")
+# titulo da pagina
+st.markdown(f"<h2 style='text-align: center; color: white;'>{fname}</h2>", unsafe_allow_html=True)
 
             # Ensure setup_langchain is called after api_key is set
     setup_langchain()
