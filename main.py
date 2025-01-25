@@ -47,7 +47,7 @@ os.makedirs(DATA_DIR, exist_ok=True)
 pre_prompt = "You are a friendly and helpful teaching assistant called Cousin. You explain concepts in great depth using simple terms."
 
 # titulo da pagina
-st.markdown(f"<h2 style='text-align: center; color: white;'>{fname}</h2>", unsafe_allow_html=True)
+#st.markdown(f"<h2 style='text-align: center; color: white;'>{fname}</h2>", unsafe_allow_html=True)
 
 
 def extract_text_from_pdf(uploaded_file):
@@ -188,8 +188,7 @@ with st.sidebar:
         
 
 # titulo da pagina
-st.markdown(f"<h2 style='text-align: center; color: white;'>{fname}</h2>", unsafe_allow_html=True)
-
+st.markdown(f"<h3 style='text-align: center; color: white;'>{fname}</h3>", unsafe_allow_html=True)
 
 # Store LLM generated responses
 if "messages" not in st.session_state.keys():
