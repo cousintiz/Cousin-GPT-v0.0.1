@@ -182,12 +182,14 @@ with st.sidebar:
                 f.write(extracted_text)
 
             st.success(f"✅ File '{upload.name}' uploaded successfully!")
-# titulo da pagina
-            st.markdown(f"<h2 style='text-align: center; color: white;'>{fname}</h2>", unsafe_allow_html=True)
 
             # Ensure setup_langchain is called after api_key is set
             setup_langchain()
         
+
+# titulo da pagina
+st.markdown(f"<h2 style='text-align: center; color: white;'>{fname}</h2>", unsafe_allow_html=True)
+
 
 # Store LLM generated responses
 if "messages" not in st.session_state.keys():
