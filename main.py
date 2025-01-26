@@ -3,10 +3,13 @@ from io import StringIO
 from langchain.chains import ConversationalRetrievalChain
 from langchain_community.vectorstores import FAISS
 from langchain_openai import ChatOpenAI
-from langchain_community.document_loaders import DirectoryLoader, TextLoader
+from langchain_community.document_loaders import TextLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings
 from langchain.indexes import VectorstoreIndexCreator
 from langchain.memory import ConversationBufferMemory
+from langchain.vectorstores import FAISS
+import pickle
 import importlib.util
 import nltk
 from dotenv import load_dotenv
@@ -134,7 +137,9 @@ def process_uploaded_file(uploaded_file):
 
 def setup_langchain(filename):
     global chat_history, memory, loader, index, llm, retriever, api_key, max_tokens, gpt_model, temperature
+    
     if filename is not None:
+
         chat_history = []
         memory = ConversationBufferMemory(memory_key="chat_history",return_messages=True)
 
@@ -153,20 +158,44 @@ def setup_langchain(filename):
         #loader = DirectoryLoader(DATA_DIR, glob="**/*.*")  # Load all file types
 
         loader = TextLoader(file_path)
-        docs = loader.load()
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
+        docs = loader.load_and_split(text_splitter)
+        #docs = loader.load()
         if not docs or len(docs) == 0:
             st.warning("No documents found. Upload files before starting.")
             return
         
         # Initialize LangChain
-        index = VectorstoreIndexCreator(vectorstore_cls=FAISS, embedding=embeddings).from_documents(docs)
+        #index = VectorstoreIndexCreator(vectorstore_cls=FAISS, embedding=embeddings).from_documents(docs)
+        
+        # Define FAISS index path
+        faiss_index_path = os.path.join(DATA_DIR, "faiss_index")
+
+        # Check if FAISS index already exists
+        if os.path.exists(faiss_index_path):
+            index = FAISS.load_local(faiss_index_path, embeddings, allow_dangerous_deserialization=True)
+
+        else:
+            index = FAISS.load_local(faiss_index_path, embeddings, allow_dangerous_deserialization=True)
+            index.save_local(faiss_index_path)
+                
+        
+        # llm
         llm = ChatOpenAI(
             model=gpt_model,
             api_key=api_key,
             temperature=temperature,
             max_tokens=max_tokens
         )
-        retriever = index.vectorstore.as_retriever(search_type="mmr", search_kwargs={"k": 2, "score_threshold": 1, "fetch_k": 16})
+        #retriever = index.vectorstore.as_retriever(search_type="mmr", search_kwargs={"k": 2, "score_threshold": 1, "fetch_k": 16})
+        retriever = index.as_retriever(
+            search_type="mmr",
+            search_kwargs={
+                "k": 10,  # Retrieve more results for improved context
+                "lambda_mult": 0.5,  # Balance diversity & relevance in MMR
+                "score_threshold": 0.75,  # Adjust threshold for better filtering
+                "fetch_k": 20,  # Fetch more documents internally for filtering
+            })
     else:
         return
 
