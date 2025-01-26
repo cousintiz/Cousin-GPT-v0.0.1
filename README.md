@@ -2,6 +2,7 @@
 **DocuChat AI** is an advanced **document-based chatbot** that enables users to **upload files (PDF, DOCX, TXT, CSV)** and ask questions based on their content. It combines **LangChain for retrieval, OpenAI’s GPT for responses, and web search (Google/Bing) for real-time data**.
 
 This guide provides a **detailed breakdown** of the files in the repository, explaining their purpose and how they contribute to the app’s functionality.
+
 📌 [DocuChat AI](https://marta-gpt.streamlit.app/)
 
 ![Alt Text](image.png)
