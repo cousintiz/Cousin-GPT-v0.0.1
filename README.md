@@ -2,6 +2,9 @@
 **DocuChat AI** is an advanced **document-based chatbot** that enables users to **upload files (PDF, DOCX, TXT, CSV)** and ask questions based on their content. It combines **LangChain for retrieval, OpenAI’s GPT for responses, and web search (Google/Bing) for real-time data**.
 
 This guide provides a **detailed breakdown** of the files in the repository, explaining their purpose and how they contribute to the app’s functionality.
+📌 [DocuChat AI](https://marta-gpt.streamlit.app/)
+
+![Alt Text](image.png)
 
 ---
 
@@ -76,14 +79,6 @@ This is the **heart of the DocuChat AI** system. It powers:
 ✅ **GPT-4o** for intelligent responses  
 ✅ **Web Search** (Google/Bing) fallback if GPT doesn’t know  
 ✅ **Automatic File Cleanup** (Deletes files after session)  
-
----
-
-### **🔹 `pagev0.png` & `pagev1.png`** *(App UI Mockups - 🎨 Visual Guide)*
-- These **images** likely contain **screenshots or architecture diagrams**.
-- Used for **README documentation** or **UI previews**.
-
----
 
 ### **🔹 `requirements.txt`** *(Dependency Management - 📦 Required Python Packages)*
 - Lists **all Python libraries** required for the chatbot.
