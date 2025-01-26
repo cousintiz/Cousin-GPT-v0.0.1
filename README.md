@@ -176,4 +176,6 @@ This project is licensed under the **MIT License**, meaning it’s free to use, 
 4️⃣ Start **chatting with your documents!** 🚀  
 
 ---
+
 **📌 Questions? Need help?** Contact us on **GitHub Discussions**! 😊
+
