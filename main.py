@@ -37,7 +37,8 @@ index = None
 retriever = None
 llm = None
 upload = None
-fname = "DocuChat AI"
+fname = None
+title = "DocuChat AI"
 gpt_model = "gpt-4o-mini"
 max_tokens = 256  # Add token limit
 
@@ -56,7 +57,7 @@ os.makedirs(DATA_DIR, exist_ok=True)
 pre_prompt = "You are a friendly and helpful teaching assistant called Cousin. You explain concepts in great depth using simple terms."
 
 # titulo da pagina
-st.markdown(f"<h1 style='text-align: center; color: white;'>{fname}</h1>", unsafe_allow_html=True)
+st.markdown(f"<h1 style='text-align: center; color: white;'>{title}</h1>", unsafe_allow_html=True)
 temp_message = st.empty()
 
 def extract_text_from_pdf(uploaded_file):
@@ -131,37 +132,43 @@ def process_uploaded_file(uploaded_file):
 
 
 def setup_langchain(filename):
-    global chat_history, memory, loader, index, llm, retriever, api_key 
+    global chat_history, memory, loader, index, llm, retriever, api_key, max_tokens, gpt_model
+    if filename is not None:
+        chat_history = []
+        memory = ConversationBufferMemory(memory_key="chat_history",return_messages=True)
 
-    chat_history = []
-    memory = ConversationBufferMemory(memory_key="chat_history",return_messages=True)
-
-    if not api_key or api_key.strip() == "":
-      st.error("⚠️ Please provide a valid OpenAI API key in the sidebar.")
-      return
-      
-    # Set local docs for LangChain
-    embeddings = OpenAIEmbeddings(api_key=api_key)
+        if not api_key or api_key.strip() == "":
+            st.error("⚠️ Please provide a valid OpenAI API key in the sidebar.")
+            return
+        
+        # Set local docs for LangChain
+        embeddings = OpenAIEmbeddings(api_key=api_key)
 
 
-    file_path = os.path.join(DATA_DIR, filename)
-    if not os.path.exists(file_path):
-        st.error(f"❌ File '{filename}' not found.")
+        file_path = os.path.join(DATA_DIR, filename)
+        if not os.path.exists(file_path):
+            st.error(f"❌ File '{filename}' not found.")
+            return
+        #loader = DirectoryLoader(DATA_DIR, glob="**/*.*")  # Load all file types
+
+        loader = TextLoader(file_path)
+        docs = loader.load()
+        if not docs or len(docs) == 0:
+            st.warning("No documents found. Upload files before starting.")
+            return
+        
+        # Initialize LangChain
+        index = VectorstoreIndexCreator(vectorstore_cls=FAISS, embedding=embeddings).from_documents(docs)
+        llm = ChatOpenAI(
+            model=gpt_model,
+            api_key=api_key,
+            temperature=temperature,
+            max_tokens=max_tokens
+        )
+        retriever = index.vectorstore.as_retriever(search_type="mmr", search_kwargs={"k": 2, "score_threshold": 1, "fetch_k": 16})
+    else:
         return
-    #loader = DirectoryLoader(DATA_DIR, glob="**/*.*")  # Load all file types
 
-    loader = TextLoader(file_path)
-    docs = loader.load()
-    if not docs or len(docs) == 0:
-        st.warning("No documents found. Upload files before starting.")
-        return
-    
-    # Initialize LangChain
-    index = VectorstoreIndexCreator(vectorstore_cls=FAISS, embedding=embeddings).from_documents(docs)
-
-    #set up chain params:
-    llm = ChatOpenAI(model = gpt_model, api_key = api_key, temperature = 0.7, max_tokens = 256)
-    retriever = index.vectorstore.as_retriever(search_type="mmr", search_kwargs={"k": 2, "score_threshold": 1, "fetch_k": 16})
 
 def search_web(query):
     """Use Google Search API (SerpAPI) to fetch relevant search results."""
@@ -194,6 +201,7 @@ def search_web(query):
     except Exception as e:
         return f"⚠️ Web search error: {e}"
 
+
 def gpt(prompt) -> str:
     print("running gpt...")
     try:
@@ -212,6 +220,7 @@ def gpt(prompt) -> str:
         st.error(f"⚠️ OpenAI API error: {e}")
         return ""
 
+
 def marta(question: str) -> str:
     # receives prompt from user, and returns answer
     print("runnig marta...")
@@ -226,19 +235,22 @@ def marta(question: str) -> str:
 
     return answer
 
+
 def agent_run(prompt: str) -> str:
     global temp_message
+    answer = None
     # Handle user's question
-    
-    answer = marta(prompt)
-    if [phrase for phrase in filter if phrase.lower() in answer.lower()]:
+    if fname is not None:
+        answer = marta(prompt)
+
+    if answer is None or [phrase for phrase in filter if phrase.lower() in answer.lower()]:
         temp_message.empty() # clear temp message
         temp_message.markdown("🤔 Just thinking... ")
         answer = gpt(prompt)
 
     temp_message.empty()
     # check gpt model    
-    if [phrase for phrase in filter if phrase.lower() in answer.lower()]:
+    if answer is None or [phrase for phrase in filter if phrase.lower() in answer.lower()]:
         temp_message.markdown("🤔 Thinking... ")
         answer = search_web(prompt)
 
@@ -249,12 +261,12 @@ def agent_run(prompt: str) -> str:
 # sidebar
 with st.sidebar:
         
-    st.header("Provide data files with relevant info 📄")
+    st.markdown("<h3 style='text-align: center; color: white;'>Provide files with relevant info 📄</h3>", unsafe_allow_html=True)
     upload = st.file_uploader("Upload a file", type=["pdf", "docx", "txt", "csv"])
     
     if upload is None:
-        st.warning("⚠️ Please upload a valid file to proceed.")
-        st.stop()  # Stop execution until the user uploads a file
+        st.warning("⚠️ Upload a valid document to chat with.")
+        #st.stop()  # Stop execution until the user uploads a file
 
     if upload:
         extracted_text = process_uploaded_file(upload)
@@ -268,7 +280,12 @@ with st.sidebar:
 
             # Ensure setup_langchain is called after api_key is set
             setup_langchain(fname)
-        
+
+
+st.sidebar.markdown("<h3 style='text-align: center; color: white;'>Configure Model's Performance</h3>", unsafe_allow_html=True)
+temperature=st.sidebar.slider("Temperature", 0.0, 1.0, 0.7),
+max_tokens=st.sidebar.number_input("Max Tokens", min_value=128, max_value=512, value=256)
+       
 # Store LLM generated responses
 if "messages" not in st.session_state.keys():
     st.session_state.messages = [{"role": "assistant", "content": "How may I help you?"}]
