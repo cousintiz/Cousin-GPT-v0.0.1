@@ -13,4 +13,5 @@ faiss-cpu
 unstructured[pdf]
 pdfminer.six
 unstructured[pdf,images]
+requests
 pdf2image
