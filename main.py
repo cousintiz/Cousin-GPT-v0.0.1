@@ -17,8 +17,8 @@ import docx  # python-docx for Word files
 import pandas as pd
 from openai import OpenAI  # Updated import
 
-#nltk.download('punkt_tab')
-#nltk.download('averaged_perceptron_tagger_eng')
+nltk.download('punkt_tab')
+nltk.download('averaged_perceptron_tagger_eng')
 
   
 # Check if libmagic is installed
