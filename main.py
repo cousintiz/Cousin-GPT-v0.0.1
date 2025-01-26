@@ -299,4 +299,5 @@ if prompt is not None:
         st.write(answer)
 
     message = {"role": "assistant", "content": answer}
+
     st.session_state.messages.append(message)
