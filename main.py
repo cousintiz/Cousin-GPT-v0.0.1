@@ -41,6 +41,7 @@ fname = None
 title = "DocuChat AI"
 gpt_model = "gpt-4o-mini"
 max_tokens = 256  # Add token limit
+temperature = 0.7
 
 # api keys
 api_key = os.getenv('API_KEY')
@@ -132,7 +133,7 @@ def process_uploaded_file(uploaded_file):
 
 
 def setup_langchain(filename):
-    global chat_history, memory, loader, index, llm, retriever, api_key, max_tokens, gpt_model
+    global chat_history, memory, loader, index, llm, retriever, api_key, max_tokens, gpt_model, temperature
     if filename is not None:
         chat_history = []
         memory = ConversationBufferMemory(memory_key="chat_history",return_messages=True)
@@ -278,7 +279,7 @@ with st.sidebar:
 
             st.success(f"✅ File uploaded successfully!")
 
-            # Ensure setup_langchain is called after api_key is set
+            # Ensure  Fsetup_langchain is called after api_key is set
             setup_langchain(fname)
 
 
