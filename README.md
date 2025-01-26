@@ -3,7 +3,7 @@
 
 This guide provides a **detailed breakdown** of the files in the repository, explaining their purpose and how they contribute to the app’s functionality.
 
-📌 [DocuChat AI](https://marta-gpt.streamlit.app/)
+📌 [DocuChat AI](https://docuchats-ai.streamlit.app/)
 
 ![Alt Text](image.png)
 
@@ -135,7 +135,7 @@ This is the **heart of the DocuChat AI** system. It powers:
 
 ## **🌐 Running on the Cloud**
 **DocuChat AI is also hosted online!**  
-🔗 **[Try it here](https://marta-gpt.streamlit.app/)**  
+🔗 **[Try it here](https://docuchats-ai.streamlit.app/)**  
 
 ✅ **No installation needed**  
 ✅ **Just upload a document & start asking questions!**  
