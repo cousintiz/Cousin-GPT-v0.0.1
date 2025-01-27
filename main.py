@@ -61,7 +61,7 @@ DATA_DIR = "./database/"
 os.makedirs(DATA_DIR, exist_ok=True)
 
 # assistant prompt
-pre_prompt = "You are a DeepSeek-R, a friendly and helpful teaching AI assistant. You explain concepts in great depth using simple terms."
+pre_prompt = "You are a DeepSeek-R1, a friendly and helpful teaching AI assistant. You explain concepts in great depth using simple terms."
 ds_pre_prompt = "You are DeepSeek-R1, an AI friendly and helpful teaching assistant created exclusively by DeepSeek."
 # titulo da pagina
 st.markdown(f"<h1 style='text-align: center; color: white;'>{title}</h1>", unsafe_allow_html=True)
