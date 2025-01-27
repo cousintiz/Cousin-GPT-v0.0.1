@@ -23,7 +23,6 @@ from openai import OpenAI  # Updated import
 nltk.download('punkt_tab')
 nltk.download('averaged_perceptron_tagger_eng')
 
-  
 # Check if libmagic is installed
 libmagic_spec = importlib.util.find_spec("magic")
 if libmagic_spec is None:
@@ -48,7 +47,11 @@ temperature = 0.7
 
 # api keys
 api_key = os.getenv('API_KEY')
+deepseek_key = os.getenv('DEEPSEEK_API_KEY')
 SERPAPI_KEY = os.getenv("SERPAPI_KEY")
+
+# url
+deepseekUrl = "https://api.deepseek.com"
 
 # words to filter
 filter = ["i don't know.","not able to browse","unable to browse", "can’t browse", "sorry", "can't answer", "i don't have specific", "October 2023"]
@@ -58,8 +61,8 @@ DATA_DIR = "./database/"
 os.makedirs(DATA_DIR, exist_ok=True)
 
 # assistant prompt
-pre_prompt = "You are a friendly and helpful teaching assistant called Cousin. You explain concepts in great depth using simple terms."
-
+pre_prompt = "You are a friendly and helpful teaching assistant. You explain concepts in great depth using simple terms."
+ds_pre_prompt = "You are DeepSeek-R1, an AI friendly and helpful teaching assistant created exclusively by DeepSeek."
 # titulo da pagina
 st.markdown(f"<h1 style='text-align: center; color: white;'>{title}</h1>", unsafe_allow_html=True)
 temp_message = st.empty()
@@ -235,11 +238,11 @@ def search_web(query):
 def gpt(prompt) -> str:
     print("running gpt...")
     try:
-        client = OpenAI(api_key=api_key)
+        client = OpenAI(api_key=deepseek_key, base_url=deepseekUrl)
         response = client.chat.completions.create(
-            model=gpt_model,
+            model="deepseek-chat",
             messages=[
-                {"role": "system", "content": pre_prompt},
+                {"role": "system", "content": ds_pre_prompt},
                 {"role": "user", "content": prompt}
             ],
             max_tokens=max_tokens  # Apply token limit
