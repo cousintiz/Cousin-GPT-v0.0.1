@@ -9,8 +9,10 @@ from langchain_openai import OpenAIEmbeddings
 from langchain.indexes import VectorstoreIndexCreator
 from langchain.memory import ConversationBufferMemory
 from langchain.vectorstores import FAISS
+from langchain.prompts.prompt import PromptTemplate
 import pickle
 import importlib.util
+import atexit
 import nltk
 from dotenv import load_dotenv
 import requests
@@ -39,9 +41,9 @@ index = None
 retriever = None
 llm = None
 upload = None
-fname = None
 title = "DocuChat AI"
 gpt_model = "gpt-4o-mini"
+ds_model = "deepseek-chat"
 max_tokens = 256  # Add token limit
 temperature = 0.7
 
@@ -54,15 +56,49 @@ SERPAPI_KEY = os.getenv("SERPAPI_KEY")
 deepseekUrl = "https://api.deepseek.com"
 
 # words to filter
-filter = ["i don't know.","not able to browse","unable to browse", "can’t browse", "sorry", "can't answer", "i don't have specific", "October 2023"]
+filter = ["i don't know.","don't have real-time", "not able to browse","unable to browse", "can’t browse", "sorry", "can't answer", "i don't have specific", "October 2023"]
 
 # path to database
 DATA_DIR = "./database/"
 os.makedirs(DATA_DIR, exist_ok=True)
 
+# We'll store chain & FAISS index in session_state to avoid re-initializing
+if "chain" not in st.session_state:
+    st.session_state.chain = None
+if "faiss_index" not in st.session_state:
+    st.session_state.faiss_index = None
+if "memory" not in st.session_state:
+    st.session_state.memory = ConversationBufferMemory(
+        memory_key="chat_history", return_messages=True
+    )
+# ------------------------------------
+# Custom Prompts for Conversational RAG
+# ------------------------------------
+CONDENSE_QUESTION_PROMPT = PromptTemplate(
+    input_variables=["chat_history", "question"],
+    template=(
+        "You are a helpful Docuchat , an AI assistant that condenses the user's, Build by a company called DeepAgents, using deepseek question into a standalone question.\n\n"
+        "Chat History:\n{chat_history}\n\n"
+        "User's Last Question:\n{question}\n\n"
+        "Please rewrite the last question into a self-contained question. "
+        "Make it brief but clear."
+    ),
+)
+
+COMBINE_DOCS_PROMPT = PromptTemplate(
+    input_variables=["context", "question"],
+    template=(
+        "You are called DocuChat, a highly knowledgeable AI. Build by a company called DeepAgents,  Use the following document excerpts to craft your answer.\n"
+        "If you cannot find the answer in the provided context, just say you don't know.\n\n"
+        "Context:\n{context}\n\n"
+        "Question:\n{question}\n\n"
+        "Provide a detailed yet concise answer in simple terms:"
+    ),
+)
+
 # assistant prompt
 pre_prompt = "You are a DeepSeek-R1, a friendly and helpful teaching AI assistant. You explain concepts in great depth using simple terms."
-ds_pre_prompt = "You are DeepSeek-R1, an AI friendly and helpful teaching assistant created exclusively by DeepSeek."
+ds_pre_prompt = "You are DeepSeek-R1, an AI friendly and helpful teaching assistant created exclusively by DeepSeek. if you dont know something just say i dont know"
 # titulo da pagina
 st.markdown(f"<h1 style='text-align: center; color: white;'>{title}</h1>", unsafe_allow_html=True)
 temp_message = st.empty()
@@ -138,6 +174,22 @@ def process_uploaded_file(uploaded_file):
         return None
 
 
+def build_or_load_faiss_index(docs, embeddings, faiss_path: str):
+    """
+    Load FAISS index from disk if exists; otherwise build and save a new one.
+    This avoids re-embedding large docs every session.
+    """
+    if os.path.exists(os.path.join(faiss_path, "index.faiss")):
+        try:
+            faiss_index = FAISS.load_local(faiss_path, embeddings, allow_dangerous_deserialization=True)
+            return faiss_index
+        except Exception as e:
+           print(f"Error loading FAISS index: {e}")
+    faiss_index = FAISS.from_documents(docs, embeddings)
+    faiss_index.save_local(faiss_path)
+    return faiss_index
+
+
 def setup_langchain(filename):
     global chat_history, memory, loader, index, llm, retriever, api_key, max_tokens, gpt_model, temperature
     
@@ -161,7 +213,7 @@ def setup_langchain(filename):
         #loader = DirectoryLoader(DATA_DIR, glob="**/*.*")  # Load all file types
 
         loader = TextLoader(file_path)
-        text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
         docs = loader.load_and_split(text_splitter)
         #docs = loader.load()
         if not docs or len(docs) == 0:
@@ -171,18 +223,11 @@ def setup_langchain(filename):
         # Initialize LangChain
         #index = VectorstoreIndexCreator(vectorstore_cls=FAISS, embedding=embeddings).from_documents(docs)
         
-        # Define FAISS index path
         faiss_index_path = os.path.join(DATA_DIR, "faiss_index")
+    # Build or load FAISS Index
+        st.session_state.faiss_index = build_or_load_faiss_index(docs, embeddings, faiss_index_path)
 
-        # Check if FAISS index already exists
-        if os.path.exists(faiss_index_path):
-            index = FAISS.load_local(faiss_index_path, embeddings, allow_dangerous_deserialization=True)
-
-        else:
-            index = FAISS.load_local(faiss_index_path, embeddings, allow_dangerous_deserialization=True)
-            index.save_local(faiss_index_path)
-                
-        
+            
         # llm
         llm = ChatOpenAI(
             model=gpt_model,
@@ -191,14 +236,23 @@ def setup_langchain(filename):
             max_tokens=max_tokens
         )
         #retriever = index.vectorstore.as_retriever(search_type="mmr", search_kwargs={"k": 2, "score_threshold": 1, "fetch_k": 16})
-        retriever = index.as_retriever(
+        retriever = st.session_state.faiss_index.as_retriever(
             search_type="mmr",
             search_kwargs={
-                "k": 10,  # Retrieve more results for improved context
+                "k": 5,  # Retrieve more results for improved context
                 "lambda_mult": 0.5,  # Balance diversity & relevance in MMR
-                "score_threshold": 0.75,  # Adjust threshold for better filtering
                 "fetch_k": 20,  # Fetch more documents internally for filtering
             })
+        
+
+        chain = ConversationalRetrievalChain.from_llm(
+            llm=llm,
+            retriever=retriever,
+            condense_question_prompt=CONDENSE_QUESTION_PROMPT,
+            combine_docs_chain_kwargs={"prompt": COMBINE_DOCS_PROMPT},
+            memory=st.session_state.memory
+        )
+        return chain
     else:
         return
 
@@ -240,7 +294,7 @@ def gpt(prompt) -> str:
     try:
         client = OpenAI(api_key=deepseek_key, base_url=deepseekUrl)
         response = client.chat.completions.create(
-            model="deepseek-chat",
+            model=ds_model,
             messages=[
                 {"role": "system", "content": ds_pre_prompt},
                 {"role": "user", "content": prompt}
@@ -254,43 +308,57 @@ def gpt(prompt) -> str:
         return ""
 
 
-def marta(question: str) -> str:
+def marta(prompt: str) -> str:
     # receives prompt from user, and returns answer
     print("runnig marta...")
-    chain = ConversationalRetrievalChain.from_llm(
-        llm=llm,
-        retriever=retriever,
-        memory=memory,
-    )
-    result = chain.invoke({"question": question, "chat_history": chat_history})
-    answer = result.get('answer', 'Sorry, I could not find an answer.')
-    chat_history.append((question, answer))
+
+    chain = st.session_state.chain
+    if not chain:
+        return "⚠️ No documents are indexed yet. Please upload a file first."
+
+    # RAG from local docs
+    result = chain({"question": prompt})
+    answer = result.get("answer", "").strip()
+
+    result = chain({"question": prompt})
+    answer = result.get("answer", "").strip()
+    print(answer)
+    chat_history.append((prompt, answer))
 
     return answer
 
 
 def agent_run(prompt: str) -> str:
     global temp_message
-    answer = None
-    # Handle user's question
-    if fname is not None:
-        answer = marta(prompt)
 
-    if answer is None or [phrase for phrase in filter if phrase.lower() in answer.lower()]:
-        temp_message.empty() # clear temp message
-        temp_message.markdown("🤔 Just thinking... ")
+    answer = marta(prompt)
+
+    if not answer or any(phrase in answer.lower() for phrase in filter):
+        temp_message.empty()
+        temp_message.markdown("🤔 Thinking... Fetching deeper insights...")
+        
+        # ✅ Call OpenAI only if FAISS retrieval fails
         answer = gpt(prompt)
 
     temp_message.empty()
-    # check gpt model    
-    if answer is None or [phrase for phrase in filter if phrase.lower() in answer.lower()]:
-        temp_message.markdown("🤔 Thinking... ")
+
+    if not answer or any(phrase in answer.lower() for phrase in filter):
+        temp_message.markdown("🌐 Searching the web...")
         answer = search_web(prompt)
 
     temp_message.empty()
     return answer
 
-    
+def cleanup_files():
+    """Delete all uploaded files when the session ends."""
+    for file in os.listdir(DATA_DIR):
+        file_path = os.path.join(DATA_DIR, file)
+        os.remove(file_path)
+    print("🧹 All uploaded files have been deleted.")
+
+# ✅ Register cleanup function to run when script stops
+atexit.register(cleanup_files)
+
 # sidebar
 with st.sidebar:
         
@@ -309,10 +377,10 @@ with st.sidebar:
             with open(file_path, "w", encoding="utf-8") as f:
                 f.write(extracted_text)
 
-            st.success(f"✅ File uploaded successfully!")
-
-            # Ensure  Fsetup_langchain is called after api_key is set
-            setup_langchain(fname)
+            with st.spinner("Processing documents..."):
+                # Ensure  Fsetup_langchain is called after api_key is set
+                st.session_state.chain = setup_langchain(fname)
+                st.success(f"✅ File uploaded successfully!")
 
 
 st.sidebar.markdown("<h3 style='text-align: center; color: white;'>Configure Model's Performance</h3>", unsafe_allow_html=True)
@@ -330,7 +398,7 @@ for message in st.session_state.messages:
 
 prompt = st.chat_input()
 
-if prompt is not None:
+if prompt:
 
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
@@ -348,6 +416,5 @@ if prompt is not None:
     with st.chat_message("assistant"):
         st.write(answer)
 
-    message = {"role": "assistant", "content": answer}
-
-    st.session_state.messages.append(message)
+    # Add assistant message to the session   
+    st.session_state.messages.append({"role": "assistant", "content": answer})
