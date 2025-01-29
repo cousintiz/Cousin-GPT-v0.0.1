@@ -14,13 +14,20 @@ import pickle
 import importlib.util
 import atexit
 import nltk
+from datetime import datetime
+import pytz
 from dotenv import load_dotenv
 import requests
+from datetime import datetime
 import os
 import fitz  # PyMuPDF for PDF parsing
 import docx  # python-docx for Word files
 import pandas as pd
 from openai import OpenAI  # Updated import
+import requests
+import json
+import time
+
 
 nltk.download('punkt_tab')
 nltk.download('averaged_perceptron_tagger_eng')
@@ -34,6 +41,7 @@ else:
 
 # set local docs for langchain
 load_dotenv()
+system = None # source of ans
 chat_history = None
 memory = None
 loader = None
@@ -52,15 +60,32 @@ api_key = os.getenv('API_KEY')
 deepseek_key = os.getenv('DEEPSEEK_API_KEY')
 SERPAPI_KEY = os.getenv("SERPAPI_KEY")
 
+portugal_timezone = pytz.timezone('Europe/Lisbon')
+
+# Get the current date in Portugal timezone
+current_date_portugal = datetime.now(portugal_timezone).date()
+
+# Formatting the date as 'YYYY-MM-DD'
+current_date_str = current_date_portugal.strftime('%Y-%m-%d')
+
 # url
 deepseekUrl = "https://api.deepseek.com"
 
 # words to filter
-filter = ["i don't know.","don't have real-time", "not able to browse","unable to browse", "can’t browse", "sorry", "can't answer", "i don't have specific", "October 2023"]
+filter = ["i don't know.","to get real-time","don't have real-time", "not able to browse","unable to browse", "can’t browse", "sorry", "can't answer", "i don't have specific", "October 2023"]
 
 # path to database
 DATA_DIR = "./database/"
 os.makedirs(DATA_DIR, exist_ok=True)
+
+#Replace Docuchat AI Make.com webhook URL
+WEBHOOK_URL = "https://hook.eu2.make.com/2997z20s1mj8p4jylvw6ra6pzvwh3ho9"
+
+# Set headers for JSON content
+headers = {
+    "Content-Type": "application/json",
+    "User-Agent": "Python Webhook Client"
+}
 
 # We'll store chain & FAISS index in session_state to avoid re-initializing
 if "chain" not in st.session_state:
@@ -71,6 +96,7 @@ if "memory" not in st.session_state:
     st.session_state.memory = ConversationBufferMemory(
         memory_key="chat_history", return_messages=True
     )
+
 # ------------------------------------
 # Custom Prompts for Conversational RAG
 # ------------------------------------
@@ -314,7 +340,7 @@ def marta(prompt: str) -> str:
 
     chain = st.session_state.chain
     if not chain:
-        return "⚠️ No documents are indexed yet. Please upload a file first."
+        return None
 
     # RAG from local docs
     result = chain({"question": prompt})
@@ -329,9 +355,11 @@ def marta(prompt: str) -> str:
 
 
 def agent_run(prompt: str) -> str:
-    global temp_message
+    global temp_message, source
+    st.session_state.id = str(time.time()) # Generate unique session ID
 
     answer = marta(prompt)
+    source = "RAG"
 
     if not answer or any(phrase in answer.lower() for phrase in filter):
         temp_message.empty()
@@ -339,15 +367,42 @@ def agent_run(prompt: str) -> str:
         
         # ✅ Call OpenAI only if FAISS retrieval fails
         answer = gpt(prompt)
+        source = "GPT"
 
     temp_message.empty()
 
     if not answer or any(phrase in answer.lower() for phrase in filter):
         temp_message.markdown("🌐 Searching the web...")
         answer = search_web(prompt)
+        source = "WEB"
 
     temp_message.empty()
     return answer
+
+
+def update_usage(source, prompt):
+    """Update usage stats for the current session."""
+    
+    print("session id:",current_date_str)
+    payload = {
+        "data": {
+            "prompt": prompt,
+            "source": source,
+            "date":current_date_str
+        }
+    }
+
+    try:
+        response = requests.post(
+                    WEBHOOK_URL,
+                    data=json.dumps(payload),
+                    headers=headers
+        )
+        if response.status_code in [200, 201]:
+            print("Usage updated successfully!")
+    except requests.exceptions.RequestException as e:
+        print(f"Failed to update usage: {str(e)}")
+
 
 def cleanup_files():
     """Delete all uploaded files when the session ends."""
@@ -366,7 +421,7 @@ with st.sidebar:
     upload = st.file_uploader("Upload a file", type=["pdf", "docx", "txt", "csv"])
     
     if upload is None:
-        st.warning("⚠️ Upload a valid document to chat with.")
+        st.write("...")
         #st.stop()  # Stop execution until the user uploads a file
 
     if upload:
@@ -415,6 +470,9 @@ if prompt:
     #mostrar resposta
     with st.chat_message("assistant"):
         st.write(answer)
+
+    # Update usage stats
+    update_usage(source, prompt) # send prompt and source to webhook
 
     # Add assistant message to the session   
     st.session_state.messages.append({"role": "assistant", "content": answer})
