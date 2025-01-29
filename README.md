@@ -1,174 +1,168 @@
-### **🚀 DocuChat AI - Project Structure & Features**  
-**DocuChat AI** is an advanced **document-based chatbot** that enables users to **upload files (PDF, DOCX, TXT, CSV)** and ask questions based on their content. It combines **LangChain for retrieval, OpenAI’s GPT for responses, and web search (Google/Bing) for real-time data**.
+# 🚀 **DocuChat AI - Smart Document Chatbot**
+**DocuChat AI** is the **ultimate AI-powered assistant** that lets you **chat with your documents**! 📄✨  
+It’s designed for **students, researchers, and professionals** who need **instant insights from PDFs, DOCX, TXT, and CSV files.**  
 
+### ✅ **What Makes DocuChat AI Special?**
+✔ **Multi-Format Uploads**: Supports PDFs, Word Docs, TXTs & CSVs  
+✔ **Smart AI Search**: Uses **DeepSeek R1 & GPT-4o** for better answers  
+✔ **Web Integration**: If the doc lacks info, AI **fetches real-time data** from Google  
+✔ **FAISS Vector Search**: Efficient **memory retrieval** for **fast answers**  
+✔ **Advanced Analytics**: 🚀- Tracks **peak usage days & AI sources (RAG, GPT, Web)**  
+
+🔗 **Try It Now →** [**DocuChat AI**](https://docuchats-ai.streamlit.app/)  
+
+![Alt Text](image.png)  
+
+---
+
+## 📊 **📈 Why Analytics Matter?**
+We now **track every user query**, storing **response sources** (RAG, GPT-4o, or Web).  
+This provides **businesses & researchers** with key insights like:  
+✅ **Peak Usage Days** – Know when users are most active 📊  
+✅ **Most Used AI Model** – RAG vs. GPT vs. Web 🔍  
+✅ **User Engagement Trends** – Optimize performance 💡  
+
+**Why This Matters?**  
+Businesses can now **see where users get stuck**, helping them improve **knowledge bases, FAQs, and support docs**. 🚀  
+
+---
+
+## 🔹 **Project Structure & Features**
 This guide provides a **detailed breakdown** of the files in the repository, explaining their purpose and how they contribute to the app’s functionality.
 
-📌 [DocuChat AI](https://docuchats-ai.streamlit.app/)
+---
 
-![Alt Text](image.png)
+### **📂 Project Files & What They Do**
+| File | Purpose |
+|-----------|------------|
+| `.env` | Stores API keys (GPT, DeepSeek, Web Search) 🔑 |
+| `.gitignore` | Ensures sensitive files (API keys, cache) aren’t uploaded 🚫 |
+| `main.py` | **Core AI Logic** – Handles uploads, AI processing, & responses 🤖 |
+| `app.sh` | **Auto Setup** – Launches the app in one click 🚀 |
+| `requirements.txt` | **Dependency List** – Install all required packages 📦 |
+| `setup.sh` | Automates virtual environment & installation 🛠 |
 
 ---
 
-## **📂 Project Directory & File Breakdown**
-Below is a detailed **overview of each file and folder** in the project:
-
-### **🔹 `.github/workflows/`** *(GitHub Actions - CI/CD Automation)*
-- This directory contains **workflow files** for GitHub Actions.
-- Typically used to **automate testing, deployment, and version control** of the application.
-
----
-
-### **🔹 `.env`** *(Environment Variables - 🔑 API Keys & Config)*
-- Stores **sensitive credentials** such as:
-  - **OpenAI API Key** (for GPT model responses)
-  - **SerpAPI Key** (for Google Search integration)
-  - **Bing API Key** (alternative web search)
-- Example `.env` file:
-  ```ini
-  API_KEY=your_openai_api_key
-  SERPAPI_KEY=your_serpapi_key
-  BING_API_KEY=your_bing_api_key
-  ```
-
-💡 **Ensure this file is listed in `.gitignore` to prevent exposing credentials!**
+## 🛠️ **Tech Stack**
+✅ **LangChain** – Manages **AI-driven document retrieval**  
+✅ **FAISS** – Speeds up document searches  
+✅ **GPT-4o & DeepSeek R1** – AI-powered text generation  
+✅ **Streamlit** – User-friendly UI  
+✅ **SerpAPI / Bing API** – Web search fallback  
 
 ---
 
-### **🔹 `.gitignore`** *(Git Ignore Rules - 🚫 Prevents Unwanted Files in Git)*
-- Prevents **unnecessary or sensitive files** from being committed to Git.
-- Common entries include:
-  ```gitignore
-  .env
-  __pycache__/
-  database/
-  venv/
-  ```
+## 💻 **Installation Guide (Run Locally)**
+### **1️⃣ Clone the repository**
+```bash
+git clone git@github.com:cousintiz/Marta-GPT-v0.0.1.git
+cd Marta-GPT-v0.0.1
+```
+
+### **2️⃣ Create a virtual environment**
+```bash
+python3 -m venv venv
+```
+
+### **3️⃣ Activate the virtual environment**
+#### **MacOS/Linux:**
+```bash
+source venv/bin/activate
+```
+#### **Windows (Command Prompt):**
+```cmd
+venv\Scripts\activate
+```
+#### **Windows (PowerShell):**
+```powershell
+venv\Scripts\Activate.ps1
+```
+
+### **4️⃣ Install dependencies**
+```bash
+pip install -r requirements.txt
+```
+
+### **5️⃣ Run the App Locally**
+```bash
+streamlit run main.py
+```
+
+### **6️⃣ Open the app in your browser**
+Once the app starts, it will automatically open in your default browser. If not, go to:
+```
+http://localhost:8501
+```
+
+### **7️⃣ Get an OpenAI API Key**
+- Create an OpenAI account if you don’t have one.
+- Get your API key [here](https://platform.openai.com/api-keys)
+- Enter the API key in the app when prompted.
 
 ---
 
-### **🔹 `LICENSE`** *(Open Source License - 📜 Project Rights & Permissions)*
-- Defines the **terms and conditions** for using, modifying, and distributing the software.
-- This project is likely **MIT licensed**, allowing free usage with attribution.
+## 🌐 **Cloud Deployment (No Installation Required)**
+🔗 **Try it live:** [**DocuChat AI**](https://docuchats-ai.streamlit.app/)  
+
+✅ **No setup needed**  
+✅ **Upload & chat instantly**  
+✅ **Works on any device**  
 
 ---
 
-### **🔹 `README.md`** *(Documentation - 📄 How to Install & Use the App)*
-- **Main guide** for users & developers.
-- Contains:
-  ✅ **Installation instructions**  
-  ✅ **How to use the chatbot**  
-  ✅ **API setup guide**  
-  ✅ **Features & tech stack**  
-  ✅ **How to contribute**  
-  ✅ **Live demo link (if hosted online)**  
-
----
-
-### **🔹 `app.sh`** *(Shell Script - 🔧 Quick Setup & Deployment)*
-- A **bash script** to automate setting up the environment.
-- Typically used for:
-  ✅ **Activating virtual environments**  
-  ✅ **Installing dependencies**  
-  ✅ **Starting the application**  
-
----
-
-### **🔹 `main.py`** *(Core Python Script - 🧠 AI Chatbot Implementation)*
-This is the **heart of the DocuChat AI** system. It powers:
-✅ **File Upload Handling** (PDF, DOCX, TXT, CSV)  
-✅ **LangChain + FAISS** for document retrieval  
-✅ **GPT-4o** for intelligent responses  
-✅ **Web Search** (Google/Bing) fallback if GPT doesn’t know  
-✅ **Automatic File Cleanup** (Deletes files after session)  
-
-### **🔹 `requirements.txt`** *(Dependency Management - 📦 Required Python Packages)*
-- Lists **all Python libraries** required for the chatbot.
-- Install dependencies using:
-  ```bash
-  pip install -r requirements.txt
-  ```
-- Likely includes:
-  ```ini
-  streamlit
-  langchain
-  openai
-  faiss-cpu
-  pypdf
-  python-docx
-  pandas
-  requests
-  dotenv
-  ```
-- **Ensures that all required packages** are installed for a **smooth setup**.
-
----
-
-### **🔹 `setup.sh`** *(Shell Script - 🛠️ Auto Setup for Deployment)*
-- **Automates environment setup** for **new installations**.
-- Common operations:
-  ✅ **Create virtual environment**  
-  ✅ **Install dependencies**  
-  ✅ **Setup API keys**  
-  ✅ **Launch application**  
-
----
-
-## **🚀 How the App Works**
+## 🚀 **How It Works**
 1️⃣ **User Uploads a Document**  
    - Supported formats: **PDF, DOCX, TXT, CSV**  
-   - File is saved **temporarily** in `database/`  
+   - File is **temporarily stored** for processing  
 
-2️⃣ **AI Reads the Document**  
-   - Uses **LangChain + FAISS** to process the content  
-   - Creates a **vector store** for efficient retrieval  
+2️⃣ **AI Reads & Understands**  
+   - Uses **LangChain + FAISS** for fast document retrieval  
+   - Creates a **vector store** for better memory  
 
-3️⃣ **User Asks a Question**  
-   - First, the system tries to **retrieve** an answer from the document  
-   - If no answer is found, **GPT-4o** generates a response  
-   - If GPT also doesn’t know, it **searches the web**  
+3️⃣ **AI Answers User Questions**  
+   - First, **retrieves relevant info** from the doc (RAG)  
+   - If no answer is found, **GPT-4o generates a response**  
+   - If GPT also doesn’t know, it **searches Google/Bing**  
 
-4️⃣ **AI Responds & Session Ends**  
-   - AI **answers the user’s question**  
-   - Once the session ends, all **uploaded files are deleted** for security  
+4️⃣ **Insights Are Logged **  
+   - ✅ **Timestamps are saved**  
+   - ✅ **AI Source (RAG, GPT, Web) is recorded**  
+   - ✅ **Data is analyzed to track trends**  
 
----
-
-## **🌐 Running on the Cloud**
-**DocuChat AI is also hosted online!**  
-🔗 **[Try it here](https://docuchats-ai.streamlit.app/)**  
-
-✅ **No installation needed**  
-✅ **Just upload a document & start asking questions!**  
+5️⃣ **Secure & Clean**  
+   - AI **deletes uploaded files after each session**  
+   - User queries are **anonymized** for privacy  
 
 ---
 
-## **⚒️ Technology Stack**
-| Component | Technology |
-|-----------|------------|
-| **LLM** | GPT-4o (via OpenAI API) |
-| **Vector Search** | FAISS |
-| **UI** | Streamlit |
-| **Document Processing** | PyMuPDF (PDF), python-docx (DOCX), Pandas (CSV) |
-| **AI Framework** | LangChain |
-| **Web Search** | SerpAPI (Google), Bing Search API |
+## 🏆 **Why Use DocuChat AI?**
+✔ **Saves Hours of Manual Searching**  
+✔ **Instant AI-Powered Insights**  
+✔ **Web Search When Docs Lack Data**  
+✔ **Enterprise-Grade Security**  
+✔ **Now With AI Usage Analytics!**  
+
+🔗 **Start Chatting Now** → [**DocuChat AI**](https://docuchats-ai.streamlit.app/)  
 
 ---
 
-## **🛠️ Contribution**
-This project is **open-source!** 🎉  
-**Ways to Contribute:**  
+## 🛠️ **Want to Contribute?**
+We welcome **open-source contributions!**  
+### **Ways to Help:**
 ✅ Improve **document parsing**  
 ✅ Add **multi-language support**  
-✅ Optimize **search algorithms**  
+✅ Optimize **search & retrieval**  
 ✅ Fix **bugs & issues**  
 ✅ Suggest **new features** 🚀  
 
 ---
 
-## **📜 License**
-This project is licensed under the **MIT License**, meaning it’s free to use, modify, and share with attribution.  
+## 📜 **License**
+This project is **MIT Licensed**, meaning it’s **free to use, modify, and share**.  
 
 ---
+
 ### **🔥 Ready to Try?**
 1️⃣ Clone the repo  
 2️⃣ Install dependencies  
@@ -177,5 +171,4 @@ This project is licensed under the **MIT License**, meaning it’s free to use, 
 
 ---
 
-**📌 Questions? Need help?** Contact us on **GitHub Discussions**! 😊
-
+📌 **Need Help?** Contact us on **GitHub Discussions**! 😊
